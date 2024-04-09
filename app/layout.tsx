@@ -1,12 +1,13 @@
 import { Figtree } from 'next/font/google'
 
-// import getSongsByUserId from '@/actions/getSongsByUserId'
+import getSongsByUserID from '@/actions/getSongByUserID'
 // import getActiveProductsWithPrices from '@/actions/getActiveProductsWithPrices'
 import Sidebar from '@/components/Sidebar'
 import ToasterProvider from '@/providers/ToasterProvider'
 import UserProvider from '@/providers/UserProvider'
 import ModalProvider from '@/providers/ModalProvider'
 import SupabaseProvider from '@/providers/SupabaseProvider'
+import {Song} from '@/types'
 // import Player from '@/components/Player'
 
 import './globals.css'
@@ -15,7 +16,7 @@ const font = Figtree({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Spotify Clone',
-  description: 'Spotify Clone',
+  description: 'Listen to music!',
 }
 
 export const revalidate = 0;
@@ -26,7 +27,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   // const products = await getActiveProductsWithPrices();
-  // const userSongs = await getSongsByUserId();
+  const userSongs = await getSongsByUserID();
 
   return (
     <html lang="en">
@@ -35,7 +36,7 @@ export default async function RootLayout({
         <SupabaseProvider>
           <UserProvider>
             <ModalProvider/>
-            <Sidebar>
+            <Sidebar songs = {userSongs}>
               {children}
             </Sidebar>
             {/* <Player /> */}

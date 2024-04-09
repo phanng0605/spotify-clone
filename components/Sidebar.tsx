@@ -12,10 +12,12 @@ import Box from "./Box";
 
 interface SidebarProps {
     children: React.ReactNode;
+    songs: Song[]
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-    children
+    children,
+    songs
 }) => {
     const pathname = usePathname();
     const routes = useMemo(() => [{
@@ -64,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </div>
                 </Box>
                 <Box className="overflow-y-auto h-full">
-                    <Library />
+                    <Library songs = {songs}/>
                 </Box>
 
                 </div>
