@@ -9,6 +9,7 @@ interface ListItemProps {
     href: string;
 }
 
+
 const ListItem: React.FC<ListItemProps> = ({
     image,
     name,
