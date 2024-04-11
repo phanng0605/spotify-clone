@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
+    // "types" : ["use-sound"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
