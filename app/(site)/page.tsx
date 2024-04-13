@@ -23,7 +23,7 @@ export default async function Home() {
           text-3xl
           font-semibold
           ">
-            Welcome back
+            Welcome back to Spotifan
           </h1>
           <div
           className="

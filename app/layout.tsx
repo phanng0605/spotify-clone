@@ -16,7 +16,7 @@ import './globals.css'
 const font = Figtree({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Spotify Clone',
+  title: 'SPOTIFAN',
   description: 'Listen to music!',
 }
 
