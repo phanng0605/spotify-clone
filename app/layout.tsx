@@ -9,6 +9,7 @@ import UserProvider from '@/providers/UserProvider'
 import ModalProvider from '@/providers/ModalProvider'
 import SupabaseProvider from '@/providers/SupabaseProvider'
 import {Song} from '@/types'
+import getActiveProductsWithPrices from '@/actions/getActiveProductsWithPrices'
 // import Player from '@/components/Player'
 
 import './globals.css'
@@ -29,6 +30,7 @@ export default async function RootLayout({
 }) {
   // const products = await getActiveProductsWithPrices();
   const userSongs = await getSongsByUserID();
+  const products = await getActiveProductsWithPrices();
 
   return (
     <html lang="en">
@@ -36,7 +38,7 @@ export default async function RootLayout({
         <ToasterProvider />
         <SupabaseProvider>
           <UserProvider>
-            <ModalProvider/>
+            <ModalProvider products = {products}/>
             <Sidebar songs = {userSongs}>
               {children}
             </Sidebar>

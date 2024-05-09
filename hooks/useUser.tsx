@@ -1,8 +1,11 @@
-import { useUser as useSupaUser, 
-            useSessionContext,
-        User } from "@supabase/auth-helpers-react";
-import { use, useEffect, useState, createContext, useContext } from "react";
-import { UserDetails, Subscription } from "@/types";
+import { User } from '@supabase/auth-helpers-nextjs';
+import { Subscription, UserDetails } from '@/types';
+import {
+    useSessionContext,
+    useUser as useSupaUser,
+} from '@supabase/auth-helpers-react';
+import { createContext, useContext, useEffect, useState } from 'react';
+
 type UserContextType = {
     accessToken: string | null;
     user: User | null;
@@ -20,10 +23,10 @@ export interface Props {
 }
 
 export const MyUserContextProvider = (props: Props) => {
-    const{
+    const {
         session,
         isLoading: isLoadingUser,
-        supabaseClient: supabase
+        supabaseClient: supabase,
     } = useSessionContext();
     const user = useSupaUser();
     const accessToken = session?.access_token ?? null;
@@ -32,53 +35,57 @@ export const MyUserContextProvider = (props: Props) => {
     const [subscription, setSubscription] = useState<Subscription | null>(null);
 
     const getUserDetails = () => supabase.from('users').select('*').single();
-    const getSubscription = () => 
+    const getSubscription = () =>
         supabase
-        .from('subscription')
-        .select('*, prices(*, products(*))')
-        .in('status', ['trialing', 'active'])
-        .single();
+            .from('subscriptions')
+            .select('* ,prices(*,products(*))')
+            .in('status', ['trialing', 'active'])
+            .single();
 
-useEffect(() => {
-    if(user && !isLoadingData && !userDetails && !subscription) {
-        setIsLoadingData(true);
-        Promise.allSettled([getUserDetails(), getSubscription()]).then(
-            (result) => {
-                const userDetailsPromise = result[0];
-                const subscriptionPromise = result[1];
-                
-                if(userDetailsPromise.status === 'fulfilled') {
-                    setUserDetails(userDetailsPromise.value.data as UserDetails);
+    useEffect(() => {
+        if (user && !isLoadingData && !userDetails && !subscription) {
+            setIsLoadingData(true);
+            Promise.allSettled([getUserDetails(), getSubscription()]).then(
+                (results) => {
+                    const userDetailsPromise = results[0];
+                    const subscriptionPromise = results[1];
+
+                    if (userDetailsPromise.status === 'fulfilled') {
+                        setUserDetails(
+                            userDetailsPromise.value.data as UserDetails
+                        );
+                    }
+
+                    if (subscriptionPromise.status === 'fulfilled') {
+                        setSubscription(
+                            subscriptionPromise.value.data as Subscription
+                        );
+                    }
+
+                    setIsLoadingData(false);
                 }
-                if(subscriptionPromise.status === 'fulfilled') {
-                    setSubscription(subscriptionPromise.value.data as Subscription);
-                }
+            );
+        } else if (!user && !isLoadingUser && !isLoadingData) {
+            setUserDetails(null);
+            setSubscription(null);
+        }
+    }, [user, isLoadingUser]);
 
-        setIsLoadingData(false);
+    const value = {
+        accessToken,
+        user,
+        userDetails,
+        isLoading: isLoadingUser || isLoadingData,
+        subscription,
+    };
 
-            }
-        );
-    }else if (!user && !isLoadingUser && !isLoadingData) {
-        setUserDetails(null);
-        setSubscription(null);
-    }
-}, [user, isLoadingUser]);
-
-const value = {
-    accessToken,
-    user,
-    userDetails,
-    isLoading: isLoadingUser || isLoadingData,
-    subscription,
-};
-
-return <UserContext.Provider value={value} {...props} />;
+    return <UserContext.Provider value={value} {...props} />;
 };
 
 export const useUser = () => {
     const context = useContext(UserContext);
     if (context === undefined) {
-        throw new Error(`useUser must be used within a MyUserContextProvider.`);
+        throw new Error('useUser must be used within a MyContextProvider');
     }
     return context;
-}
+};
