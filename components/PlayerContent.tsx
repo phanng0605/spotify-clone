@@ -1,5 +1,5 @@
 "use client";
-
+// @ts-ignore
 import useSound from 'use-sound';
 import {Song} from "@/types";
 import { useEffect, useState } from "react";
@@ -11,8 +11,7 @@ import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import Slider from "./Slider";
 import usePlayer from "@/hooks/usePlayer";
 import SongSlider from "./SongSlider";
-import {useRef} from "react";
-import { set } from 'react-hook-form';
+
 
 interface PlayerContentProps {
     song: Song,
